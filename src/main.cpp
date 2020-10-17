@@ -46,7 +46,6 @@ int main(int argc, char **argv){
     }
     else if(!strcmp(argv[1], "checkout")){
         std::string hash = repository.headHunter(argv[2]);
-        std::cout << hash << std::endl;
         if(argc<3 || (!hash.size())){
             std::cout << "Please enter the commit hash in correct format." << std::endl;
             repository.getHelp("checkout");

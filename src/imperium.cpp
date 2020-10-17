@@ -85,8 +85,11 @@ void imperium::getHelp(std::string helpQuery) const{
 std::string imperium::headHunter(std::string hashQuery) const{
     isRepo();
     
-    if(hashQuery.size()>5 && hashQuery.substr(0,5) == "HEAD~"){
-        long int headNum = 1 + std::stoi(hashQuery.substr(5));
+    if(hashQuery.size()>=4 && hashQuery.substr(0,4) == "HEAD"){
+        long int headNum;
+        if(hashQuery.size() > 5 && hashQuery.substr(4,1) == "~") headNum = 1 + std::stoi(hashQuery.substr(5));
+        else if(hashQuery.size()==4) headNum = 1;
+        else return "";
         if(headNum>0){
             std::fstream fileReader;
             fileReader.open((root+"/.imperium/commit.log" ).c_str(), std::fstream::in);
@@ -94,7 +97,7 @@ std::string imperium::headHunter(std::string hashQuery) const{
             while (headNum-- && std::getline (fileReader, commitEntry));
             std::string hash = ""; 
             if(commitEntry.size()>53){
-                hash = commitEntry.substr(7,47);
+                hash = commitEntry.substr(7,40);
             }
             fileReader.close();
             return hash;
