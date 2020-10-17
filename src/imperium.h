@@ -82,11 +82,8 @@ class imperium {
     //  checks if the repository is frozen due to conflict
     bool frozen();
 
-    //  Encrypts the imperium files
-    void encrypt();
-
-    //  Decrypts the imperium files
-    void decrypt();
+    //  Destructor
+    ~imperium();
 };
 
 #endif

@@ -1,4 +1,3 @@
-
 #include "imperium.h"
 #include <iostream>
 #include <fstream>
@@ -38,6 +37,16 @@ imperium::imperium(){
         std::cout << "No environment variable found!" << std::endl;
         exit(0);
     }
+    if(doesExist(root + "/.imperium.tar.gz.dat")!="file") return ;
+    system(("openssl enc -d -aes-256-cbc -pbkdf2 -k m4Y7H3SoUrc383WI7hyoU -in " + root + "/.imperium.tar.gz.dat | tar xz -P").c_str());
+    system(("rm -r " + root + "/.imperium.tar.gz.dat").c_str());
+}
+
+imperium::~imperium(){
+    if(doesExist(root + "/.imperium")!="directory") return ;
+    system(("tar cz -P " + root + "/.imperium | openssl enc -e -aes-256-cbc -pbkdf2 -k m4Y7H3SoUrc383WI7hyoU -out .imperium.tar.gz.dat").c_str());
+    system(("mv .imperium.tar.gz.dat " + root + "/.imperium.tar.gz.dat").c_str());
+    system(("rm -r " + root + "/.imperium").c_str());
 }
 
 void imperium::getHelp(std::string helpQuery){
@@ -587,17 +596,4 @@ void imperium::revert(std::string passedHash){
     std::filesystem::remove_all(root + "/.imperium/.commit/" + revertHash);
     std::cout << "Commit " + revertHash + " reverted sucessfully." <<   std::endl;
     return ;
-}
-
-void imperium::encrypt(){
-    if(doesExist(root + "/.imperium")!="directory") return ;
-    system(("tar cz -P " + root + "/.imperium | openssl enc -e -aes-256-cbc -pbkdf2 -k m4Y7H3SoUrc383WI7hyoU -out .imperium.tar.gz.dat").c_str());
-    system(("mv .imperium.tar.gz.dat " + root + "/.imperium.tar.gz.dat").c_str());
-    system(("rm -r " + root + "/.imperium").c_str());
-}
-
-void imperium::decrypt(){
-    if(doesExist(root + "/.imperium.tar.gz.dat")!="file") return ;
-    system(("openssl enc -d -aes-256-cbc -pbkdf2 -k m4Y7H3SoUrc383WI7hyoU -in " + root + "/.imperium.tar.gz.dat | tar xz -P").c_str());
-    system(("rm -r " + root + "/.imperium.tar.gz.dat").c_str());
 }

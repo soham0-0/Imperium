@@ -10,7 +10,6 @@ int main(int argc, char **argv){
     }
 
     imperium repository;
-    repository.decrypt();
     if(repository.frozen()){
         if(strcmp(argv[1],"resolve"))   std::cout << "The commands have been frozen please fix the merge conflicts and run $imperium resolve to unfrezze" << std::endl;
         else repository.resolve();
@@ -70,6 +69,5 @@ int main(int argc, char **argv){
         std::cout << "Fatal Error: Command not recognized." << std::endl;
         repository.getHelp("");
     }
-    repository.encrypt();
     return 0;
 }
