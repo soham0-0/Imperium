@@ -11,7 +11,7 @@
 #include <vector>
 #include <algorithm>
 
-bool imperium::frozen(){
+bool imperium::frozen() const{
     std::fstream fileReader;
     fileReader.open((root+"/.imperium/conflict").c_str(), std::fstream::in);
     std::string query;
@@ -20,7 +20,7 @@ bool imperium::frozen(){
     return false;
 }
 
-void imperium::resolve(){
+void imperium::resolve() const{
     std::cout << "Are you sure that you have resolved the conflict?(y/n)" << std::endl;
     char c; std::cin >> c;
     if(c != 'y')    return ;
@@ -49,7 +49,7 @@ imperium::~imperium(){
     system(("rm -r " + root + "/.imperium").c_str());
 }
 
-void imperium::getHelp(std::string helpQuery){
+void imperium::getHelp(std::string helpQuery) const{
     bool allHelp = false;
     if(helpQuery == ""){
         allHelp = true;
@@ -82,7 +82,7 @@ void imperium::getHelp(std::string helpQuery){
     return ;
 }
 
-std::string imperium::headHunter(std::string hashQuery){
+std::string imperium::headHunter(std::string hashQuery) const{
     isRepo();
     
     if(hashQuery.size()>5 && hashQuery.substr(0,5) == "HEAD~"){
@@ -106,7 +106,7 @@ std::string imperium::headHunter(std::string hashQuery){
     return "";
 }
 
-std::string imperium::relativePath(std::string path){
+std::string imperium::relativePath(std::string path) const{
     int itr = root.size();
     if(path.substr(0, itr) == root){
         return path.substr(itr+1);
@@ -114,7 +114,7 @@ std::string imperium::relativePath(std::string path){
     return path;
 }
 
-std::string imperium::doesExist(std::string path){
+std::string imperium::doesExist(std::string path) const{
     struct stat sb;
     if(!stat(path.c_str(), &sb)){
         if(S_ISDIR(sb.st_mode)){
@@ -127,7 +127,7 @@ std::string imperium::doesExist(std::string path){
     return "\0";
 }
 
-void imperium::isRepo(){
+void imperium::isRepo() const{
     bool flag = false;
     if(doesExist(root + "/.imperium")!="directory")             flag = true;
     if(doesExist(root + "/.imperium/conflict")!="file")         flag = true;
@@ -141,14 +141,14 @@ void imperium::isRepo(){
     return ;
 }
 
-void imperium::setRoot(std::string path){
+void imperium::setRoot(std::string path) {
     root += "/" + path;
     if((mkdir((root).c_str(), 0777))==-1){
         std::cerr << "Error: " << strerror(errno) << std::endl;
     } 
 }
 
-void imperium::init(){
+void imperium::init() const{
     if(doesExist(root+"/.imperium")!="\0"){
         std::cout<<"Repository has already been initialized" << std::endl;
         return ;
@@ -177,7 +177,7 @@ void imperium::init(){
     return ;
 }
 
-bool imperium::isIgnored(std::string path){
+bool imperium::isIgnored(std::string path) const{
     std::fstream fileReader;
     fileReader.open((root+"/.imperiumIgnore" ).c_str(), std::fstream::in);
     std::string ignoredPath;
@@ -189,7 +189,7 @@ bool imperium::isIgnored(std::string path){
     return false;
 }
 
-void imperium::addToLog(std::string path){
+void imperium::addToLog(std::string path) const{
     std::fstream fileReaderWriter;
     fileReaderWriter.open((root+"/.imperium/add.log" ).c_str(),std::fstream::in);
     std::string loggedPath;
@@ -202,7 +202,7 @@ void imperium::addToLog(std::string path){
     fileReaderWriter.close();
 }
 
-void imperium::addToCache(std::string path){
+void imperium::addToCache(std::string path) const{
     if(doesExist(root+"/.imperium/.add")!= "directory"){
         std::filesystem::create_directories(root+"/.imperium/.add");
     }
@@ -218,7 +218,7 @@ void imperium::addToCache(std::string path){
     return ;
 }
 
-void imperium::add(std::string path){
+void imperium::add(std::string path) const{
     std::string type;
     isRepo();
     if(path!=".") {
@@ -250,20 +250,20 @@ void imperium::add(std::string path){
     return ;
 }
 
-void imperium::purgeAdd(){
+void imperium::purgeAdd() const{
     std::filesystem::remove_all(root + "/.imperium/.add");
     std::fstream fileWriter;   
     fileWriter.open ((root+"/.imperium/add.log").c_str(), std::fstream::out | std::fstream::trunc);
     fileWriter.close();
 }
 
-std::string imperium::getTime(){
+std::string imperium::getTime() const{
         time_t now = time(0);
 	    tm *gmtm = gmtime(&now);
 	    return asctime(gmtm);
     }
 
-std::string imperium::getHash(std::string input){
+std::string imperium::getHash(std::string input) const{
     unsigned char str[500];
 	strcpy( (char *)( str ), input.c_str() );
 	unsigned char hash[20]; 
@@ -275,7 +275,7 @@ std::string imperium::getHash(std::string input){
     return ans;
 }
 
-void imperium::updateCommitLog(std::string message, std::string commitHash){
+void imperium::updateCommitLog(std::string message, std::string commitHash) const{
     std::fstream fileReader;
     fileReader.open((root+"/.imperium/commit.log" ).c_str(), std::fstream::in);
     std::fstream fileWriter;   
@@ -292,7 +292,7 @@ void imperium::updateCommitLog(std::string message, std::string commitHash){
     fileWriter.close();
 }
 
-void imperium::commit(std::string message){
+void imperium::commit(std::string message) const{
     isRepo();
     if(doesExist(root + "/.imperium/.add") != "directory"){
         std::cout << "Nothing to commit. No staged files/folders." << std::endl;
@@ -314,7 +314,7 @@ void imperium::commit(std::string message){
     return ;
 }
 
-void imperium::getCommitLog(std::string flag){
+void imperium::getCommitLog(std::string flag) const{
     isRepo();
     std::fstream fileReader;
     fileReader.open((root+"/.imperium/commit.log" ).c_str(), std::fstream::in);
@@ -329,7 +329,7 @@ void imperium::getCommitLog(std::string flag){
     return ;
 }
 
-void imperium::checkout(std::string hash){
+void imperium::checkout(std::string hash) const{
     isRepo();
     
     std::fstream fileReader;
@@ -373,7 +373,7 @@ void imperium::checkout(std::string hash){
     return ;
 }
 
-bool imperium::isSame(std::string p1, std::string p2) {
+bool imperium::isSame(std::string p1, std::string p2) const{
 
     if(doesExist(p1)=="directory" && doesExist(p2)=="directory"){
         return true;
@@ -397,7 +397,7 @@ bool imperium::isSame(std::string p1, std::string p2) {
                         std::istreambuf_iterator<char>(f2.rdbuf()));
 }
 
-void imperium::getStatus(){
+void imperium::getStatus() const{
     isRepo();
     std::vector <std::string> staged, notStaged;
     std::fstream fileReader;
@@ -462,7 +462,7 @@ void imperium::getStatus(){
     return ;
 } 
 
-void imperium::revert(std::string passedHash){
+void imperium::revert(std::string passedHash) const{
     isRepo();
     if(doesExist(root + "/.imperium/.add")=="directory"){
         std::cout << "Error: Reverting will overwrite the uncommited changes. Commit the changes and try again.\nAborting!" << std::endl;
