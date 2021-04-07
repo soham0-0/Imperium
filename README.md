@@ -1,8 +1,4 @@
-# 🔃 Imperium 🔃
-_A basic Version Control System written in C++_
-
-***
-
+![Imperium](https://socialify.git.ci/soham0-0/Imperium/image?description=1&font=Inter&language=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light)
 ## About:
 This is the personal repository/extension to project I made during [Ten Days of Code](https://10-days-of-code.netlify.app/), organized by GNU/Linux Users' Group, NIT Durgapur. Have a look at my final submission [here](https://github.com/lugnitdgp/TDoC-Imperium/tree/master/soham0-0).
 
